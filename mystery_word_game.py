@@ -19,25 +19,32 @@ WORDS = {
     "sunflower": "A tall yellow flower that faces the sun.",
 }
 
+MAX_ATTEMPTS = 7
+
 
 def choose_word():
-    """Choose a random word and its matching hint."""
+    """Choose a random word and its hint."""
     return random.choice(list(WORDS.items()))
 
 
 def show_word(secret_word, guessed_letters):
-    """Display guessed letters and underscores for hidden letters."""
-    return " ".join(
-        letter if letter in guessed_letters else "_"
-        for letter in secret_word
-    )
+    """Show guessed letters and underscores for letters not yet guessed."""
+    display = ""
+
+    for letter in secret_word:
+        if letter in guessed_letters:
+            display += letter + " "
+        else:
+            display += "_ "
+
+    return display.strip()
 
 
 def play_game():
-    """Play one round of the mystery word game."""
+    """Play one round of the word guessing game."""
     secret_word, hint = choose_word()
     guessed_letters = set()
-    attempts_left = 7
+    attempts_left = MAX_ATTEMPTS
 
     print("\nWelcome to Mystery Word Game!")
     print(f"The word has {len(secret_word)} letters.")
@@ -46,10 +53,10 @@ def play_game():
         print(f"\nWord: {show_word(secret_word, guessed_letters)}")
         print(f"Attempts left: {attempts_left}")
 
-        guess = input("Guess a letter: ").strip().lower()
+        guess = input("Guess one letter: ").strip().lower()
 
-        if len(guess) != 1 or not guess.isalpha():
-            print("Please enter one letter from A to Z.")
+        if len(guess) != 1 or guess not in "abcdefghijklmnopqrstuvwxyz":
+            print("Please enter one English letter from A to Z.")
             continue
 
         if guess in guessed_letters:
@@ -73,11 +80,12 @@ def play_game():
 
 
 def main():
-    """Run games until the player chooses to quit."""
+    """Play rounds until the player chooses to stop."""
     while True:
         play_game()
 
         play_again = input("\nWould you like to play again? (y/n): ").strip().lower()
+
         if play_again != "y":
             print("Thanks for playing!")
             break
